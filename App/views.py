@@ -10,7 +10,7 @@ def index(request):
             response = requests.get(
                 f'https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=10&appid=0d82669c229f73426179f838f2c97210').json()
             if not response:
-                messages.error(request, "Sorry! Your City Cannot Be Found ")
+                messages.error(request, f"Sorry! No Result For {city}")
         except requests.exceptions.ConnectionError:
             messages.error(request, "Sorry! You Have No Internet Access")
             response = {}
