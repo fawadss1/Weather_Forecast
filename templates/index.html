@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
+    <title>Home</title>
+</head>
+<body>
+<section class="hero is-success">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title text-center">Warmly Welcome</h1>
+        </div>
+    </div>
+</section>
+<div class="d-flex justify-content-center mt-5">
+    <form method="POST">
+        {% csrf_token %}
+        <h4>Enter Your City Name</h4>
+        <input class="mt-2" type="text" name="city" placeholder="Enter Your City Name" style="width:400px;padding: 11px"
+               required>
+        <button type="submit" style="padding: 12px" class="btn btn-success" name="cityName">Search City</button>
+    </form>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="d-flex justify-content-center mr-5">
+            <p class="text-center text-danger"><b>{{ message }}</b></p>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if cityData %}
+    <div class="d-flex justify-content-center mr-5">
+        <form method="POST" id="Form">
+            {% csrf_token %}
+            <input type="hidden" name="lat" id="lat">
+            <input type="hidden" name="lon" id="lon">
+        </form>
+        <ul>
+            {% for i in cityData %}
+                <li onclick="submitForm('{{ i.lat }}','{{ i.lon }}');">
+                    <a>
+                        <span>{{ i.name }}, {{ i.country }}</span>
+                        <span>
+                            <img src="https://openweathermap.org/images/flags/{{ i.country|lower }}.png" alt="country">
+                        </span>
+                        <span class="ml-3"><small>{{ i.lat }}, {{ i.lon }}</small></span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<script type="text/javascript">
+    function submitForm(lat, lon) {
+        $('#lat').val(lat);
+        $('#lon').val(lon);
+        $('#Form').submit();
+    }
+</script>
+
+{% if weatherData %}
+    <section class="section mt-2">
+        <div class="d-flex justify-content-center">
+            <article class="media">
+                <div class="media-left">
+                    <figure class="image is-50x50">
+                        <img src="https://openweathermap.org/img/w/{{ weatherData.icon }}.png" alt="Image">
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <div class="content">
+                        <span class="title">{{ weatherData.city|title }}, {{ weatherData.country }}
+                            <img src="https://openweathermap.org/images/flags/{{ weatherData.country|lower }}.png"
+                                 width="25" height="25">
+                        </span>
+                        <p class="mt-2"><b>Feels Like {{ weatherData.feels_like }}, {{ weatherData.desc|title }}</b></p>
+                        <hr>
+                        <span class="subtitle">Current Temp: {{ weatherData.current_temp }}° C</span>
+                        <ul>
+                            <li class="float-left mt-1">Min Temp: {{ weatherData.min_temp }}° C</li>
+                            <li class="float-right ml-5">Max Temp: {{ weatherData.max_temp }}° C</li>
+                        </ul>
+                        <ul>
+                            <li class="float-left mt-1">Humidity: {{ weatherData.humidity }}%</li>
+                            <li class="float-right ml-5">Pressure: {{ weatherData.pressure }}hPa</li>
+                        </ul>
+                        <ul>
+                            <li class="float-left mt-1">Wind Speed: {{ weatherData.wind_spd }}m/Sec</li>
+                            <li class="float-right ml-5">Direction: {{ weatherData.wind_direction }}°
+                                <span class="iconify" data-icon="wi:wind-direction-s"
+                                      data-rotate="{{ weatherData.wind_direction }}deg"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+{% endif %}
+</body>
+<footer>
+    <p class="bg-dark" style="color:yellow;position: fixed;bottom: 0;">Developed By Fawad Copyright@ 2021 All Rights
+        Reserved.</p>
+</footer>
+</html>
